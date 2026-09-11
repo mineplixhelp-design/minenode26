@@ -1,103 +1,127 @@
 {
-  "breadcrumb": ["Home"],
-  "title": "Selamat Datang di Mineplix",
+  "breadcrumb": ["Home", "Panduan Gameplay", "Tutorial Land"],
+  "title": "Tutorial Land & Proteksi Area",
   "tabs": [
     {
-      "id": "tab-about",
-      "label": "About",
+      "id": "tab-about-land",
+      "label": "Dasar Land Claim",
       "sections": [
         {
-          "type": "commands",
-          "title": "Alamat IP & Koneksi Server",
-          "items": [
+          "type": "card",
+          "title": "Sistem Proteksi Claim Land",
+          "desc": "menggunakan sistem cangkul/sekop emas untuk mengamankan bangunan kamu dari pencurian, perusakan (griefing), dan PvP liar.",
+          "subcards": [
             {
-              "command": "play.mineplix.my.id",
-              "desc": "IP Server (Java & Bedrock Edition)"
+              "title": "Golden Shovel (Sekop Emas)",
+              "desc": "Alat utama untuk membuat land. Klik kanan sudut pertama, lalu klik kanan sudut seberangnya secara diagonal untuk membuat area persegi."
             },
             {
-              "command": "19132",
-              "desc": "Port Khusus Bedrock / Pocket Edition"
+              "title": "Stick (Ranting Kayu)",
+              "desc": "Alat inspeksi. Klik kanan di tanah untuk melihat batas garis land milikmu atau mengecek siapa pemilik land tersebut."
             }
           ]
         },
         {
-          "type": "card",
-          "title": "Tentang Mineplix Survival Ecogen",
-          "desc": "Mineplix adalah server Minecraft Survival Ecogen modern dengan sistem ekonomi generator, pengamanan land claim, serta berbagai fitur custom yang dirancang untuk pengalaman bermain kompetitif dan ramah pemula.",
-          "subcards": [
+          "type": "grid_card",
+          "title": "Tingkatan Akses (Trust Level)",
+          "items": [
             {
-              "title": "Versi & Dukungan",
-              "desc": "Mendukung Minecraft Java & Bedrock (Crossplay) versi terbaru 1.20+"
+              "title": "Access Trust (/accesstrust)",
+              "desc": "Izin tingkat dasar. Player lain hanya bisa menggunakan tombol, lever, pintu, dan bed."
             },
             {
-              "title": "Fitur Unggulan",
-              "desc": "Resource Generator (Ecogen), Economy Market, Custom Items, & Safe Land Claim"
+              "title": "Container Trust (/containertrust)",
+              "desc": "Izin menengah. Player bisa buka chest, furnace, hopper, mengangkut hewan, dan menggunakan alat tani."
+            },
+            {
+              "title": "Full Trust (/trust)",
+              "desc": "Izin penuh. Player bisa membangun, merusak block, dan membuka semua penyimpanan di area tersebut."
+            },
+            {
+              "title": "Permission Trust (/permissiontrust)",
+              "desc": "Izin manajerial. Player bisa membagikan hak akses trust milikmu kepada player lainnya."
             }
           ]
         },
         {
           "type": "callout",
-          "title": "Tips Pertama Kali Masuk",
-          "text": "Baru pertama kali bergabung? Gunakan perintah <salin>/guide</salin> di game atau lihat tutorial website buka menu dan pilih panduan gameplay.",
-          "style": "info",
-          "icon": "fa-solid fa-lightbulb"
-        },
-        {
-          "type": "profile_card",
-          "title": "Staff & Tim Pengembang",
-          "profiles": [
-            {
-              "name": "ITZygaa",
-              "role": "Project Lead @Mineplix and Developer",
-              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
-              "badge": "Owner"
-            },
-            {
-              "name": "VxPloit",
-              "role": "Developer And Admin System",
-              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
-              "badge": "Dev"
-            },
-            {
-              "name": "Kenzo9192",
-              "role": "Builders Maps And Admin Server",
-              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
-              "badge": "Builders"
-            },
-            {
-              "name": "PAKrifki",
-              "role": "Builders Maps And Admin Server",
-              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
-              "badge": "Builders"
-            }
-          ]
+          "title": "Ketentuan Ukuran Claim",
+          "text": "Ukuran minimal klaim adalah <b>5x10 block</b> (total 50 block). Jika batas klaim terlalu kecil, sistem tidak akan memproses area tersebut, maksimal 1000 block dan maksimal wilayah 5 tempat berbeda.",
+          "style": "warning",
+          "icon": "fa-solid fa-triangle-exclamation"
         }
       ]
     },
     {
-      "id": "tab-komunitas",
-      "label": "Komunitas",
+      "id": "tab-commands-land",
+      "label": "Perintah & Tutorial",
       "sections": [
         {
-          "type": "grid_card",
-          "title": "Platform Komunitas & Store",
+          "type": "commands",
+          "title": "Perintah Utama Land Claim",
           "items": [
             {
-              "title": "Discord Official",
-              "desc": "Tempat ngobrol utama, informasi pengumuman patch, dan event harian server.",
-              "link": "https://discord.gg/mineplix"
+              "command": "/claim",
+              "desc": "Membuat area claim secara otomatis dengan ukuran minimal (10x10) di posisi kamu berdiri."
             },
             {
-              "title": "Forum Diskusi",
-              "desc": "Wadah diskusi publik, tempat berbagi saran fitur baru, dan guide dari komunitas.",
-              "link": "https://mineplix.my.id/forum"
+              "command": "/abandonclaim",
+              "desc": "Menghapus area claim yang sedang kamu tempati dan mengembalikan Claim Blocks."
             },
             {
-              "title": "Mineplix Store",
-              "desc": "Dukung keberlangsungan server dan dapatkan Rank, Key Crate, serta Perk eksklusif.",
-              "link": "https://store.mineplix.net"
+              "command": "/abandonallclaims",
+              "desc": "Menghapus SELURUH area land claim milikmu yang ada di server."
+            },
+            {
+              "command": "/claimlist",
+              "desc": "Melihat daftar koordinat seluruh land milikmu beserta sisa Claim Blocks yang tersedia."
+            },
+            {
+              "command": "/subdivideclaims",
+              "desc": "Mengubah mode sekop emas menjadi pembuat sub-claim (membagi area di dalam land)."
+            },
+            {
+              "command": "/basicclaims",
+              "desc": "Mengembalikan mode sekop emas ke mode pembuat land utama."
             }
           ]
+        },
+        {
+          "type": "commands",
+          "title": "Perintah Hak Akses (Trust System)",
+          "items": [
+            {
+              "command": "/trust [nama_player]",
+              "desc": "Memberikan akses penuh (Build & Container) kepada player lain."
+            },
+            {
+              "command": "/containertrust [nama_player]",
+              "desc": "Memberikan akses membuka Chest, Furnace, dan mengambil item/hewan."
+            },
+            {
+              "command": "/accesstrust [nama_player]",
+              "desc": "Memberikan akses menggunakan pintu, tombol, lever, dan tempat tidur."
+            },
+            {
+              "command": "/permissiontrust [nama_player]",
+              "desc": "Izinkan player lain untuk mengatur/membagi lagi izin trust di land kamu."
+            },
+            {
+              "command": "/untrust [nama_player]",
+              "desc": "Mencabut seluruh izin/akses dari player yang ditentukan."
+            },
+            {
+              "command": "/trustlist",
+              "desc": "Melihat daftar nama player yang memiliki akses trust di area land tersebut."
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Tips Membeli Claim Blocks",
+          "text": "Kehabisan blok proteksi? kamu bisa bermain per jam bisa mendapatkan <b>10 block</b> claim land.",
+          "style": "info",
+          "icon": "fa-solid fa-lightbulb"
         }
       ]
     }
