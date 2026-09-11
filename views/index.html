@@ -3,19 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Mineplix Wiki</title>
+  <title>Mineplix - Home</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <!-- Path CSS ke public/css/style.css -->
-  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../public/css/style.css">
 </head>
-<body data-theme="dark">
+<body data-theme="dark" data-page-json="home">
 
   <div class="mobile-header">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <!-- Path gambar ke public/img/icon.png -->
-      <img src="../img/icon.png" alt="Mineplix" class="mobile-logo">
+      <img src="../public/img/icon.png" alt="Mineplix" class="mobile-logo">
       <span style="font-weight: 700; font-size: 14px;">Mineplix</span>
     </div>
     <button id="sidebarToggle" class="mobile-menu-btn">
@@ -29,8 +26,7 @@
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <!-- Path gambar ke public/img/icon.png -->
-          <img src="../img/icon.png" alt="Mineplix" class="sidebar-logo">
+          <img src="../public/img/icon.png" alt="Mineplix" class="sidebar-logo">
           <h2>Mineplix</h2>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
@@ -43,13 +39,23 @@
 
       <div class="nav-group">
         <div class="nav-title">Menu Utama</div>
-        <div class="nav-tree-container" id="sidebarNavContainer"></div>
+        <div class="nav-tree-container" id="sidebarNavContainer">
+          <ul class="nav-list">
+            <li><a href="/" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+            <li><a href="/tutor/land" class="nav-link"><i class="fa-solid fa-map"></i> Land Tutorial</a></li>
+            <li><a href="/tutor/eco" class="nav-link"><i class="fa-solid fa-coins"></i> Economy Tutorial</a></li>
+            <li><a href="/tutor/esentials" class="nav-link"><i class="fa-solid fa-book"></i> Essentials Tutorial</a></li>
+            <li><a href="/rules" class="nav-link"><i class="fa-solid fa-gavel"></i> Rules</a></li>
+            <li><a href="/ecostats" class="nav-link"><i class="fa-solid fa-chart-line"></i> Economy Stats</a></li>
+            <li><a href="/ranksinfo" class="nav-link"><i class="fa-solid fa-shield-halved"></i> Ranks Info</a></li>
+          </ul>
+        </div>
       </div>
 
       <div class="store-card">
         <h4><i class="fa-solid fa-cart-shopping"></i> Mineplix Store</h4>
         <p>Dapatkan Rank, Key Crate, dan Perk eksklusif server sekarang.</p>
-        <a href="https://store.mineplix.biz.id" target="_blank" class="btn-store">Buka Store</a>
+        <a href="https://store.mineplix.net" target="_blank" class="btn-store">Buka Store</a>
       </div>
     </aside>
 
@@ -65,8 +71,6 @@
   </div>
 
   <div class="toast" id="toast">Teks berhasil disalin!</div>
-
-  <!-- Path JS ke public/js/script.js -->
-  <script src="../js/script.js"></script>
+  <script src="../public/js/script.js"></script>
 </body>
 </html>
