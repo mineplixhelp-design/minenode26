@@ -3,18 +3,408 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Mineplix Wiki</title>
+  <title>Mineplix - Survival Ecogen</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <!-- Path CSS ke public/css/style.css -->
-  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    :root {
+      --bg-main: #f0f2f5;
+      --bg-container: #ffffff;
+      --bg-card: #f8f9fa;
+      --bg-hover: #e9ecef;
+      --bg-active: #e2e6ea;
+      --text-main: #1e2022;
+      --text-muted: #6c757d;
+      --line-color: #ced4da;
+      --primary: #635bfc;
+      --primary-light: #eeedff;
+      --copy-bg: rgba(20, 20, 20, 0.1);
+      --radius-sm: 6px;
+      --radius-md: 8px;
+      --radius-lg: 10px;
+      --radius-xl: 12px;
+      --radius-round: 24px;
+      --radius-container: 16px;
+      --sidebar-width: 260px;
+      --transition-speed: 0.35s;
+    }
+
+    [data-theme="dark"] {
+      --bg-main: #0b0c10;
+      --bg-container: #151821;
+      --bg-card: #1f2330;
+      --bg-hover: #2a2f40;
+      --bg-active: #32384d;
+      --text-main: #f0f2f5;
+      --text-muted: #8c96a6;
+      --line-color: #3a4154;
+      --primary: #7c75ff;
+      --primary-light: #222538;
+      --copy-bg: rgba(255, 255, 255, 0.1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    }
+
+    html, body {
+      height: 100%;
+      height: 100dvh;
+      overflow: hidden;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      display: flex;
+    }
+
+    .theme-toggle-btn, .mobile-menu-btn {
+      background: var(--bg-hover);
+      border: none;
+      cursor: pointer;
+      outline: none;
+      padding: 8px 14px;
+      border-radius: var(--radius-round);
+      color: var(--text-main);
+      font-size: 14px;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-toggle-btn:hover, .mobile-menu-btn:hover {
+      background: var(--bg-active);
+    }
+
+    .app-container {
+      flex: 1;
+      display: flex;
+      height: 100%;
+      height: 100dvh;
+      background: var(--bg-container);
+      overflow: hidden;
+    }
+
+    .sidebar {
+      width: var(--sidebar-width);
+      height: 100%;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      background: var(--bg-card);
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex-shrink: 0;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background-color var(--transition-speed) ease;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .sidebar-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-md);
+      object-fit: cover;
+    }
+
+    .sidebar-header h2 {
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .close-sidebar-btn {
+      display: none;
+      background: var(--bg-hover);
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 8px 14px;
+      border-radius: var(--radius-round);
+      color: var(--text-main);
+    }
+
+    .nav-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-title {
+      font-size: 12px;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+
+    .nav-tree-container {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 14px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: var(--bg-hover);
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .dropdown-arrow {
+      font-size: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .nav-dropdown.active .dropdown-arrow {
+      transform: rotate(180deg);
+    }
+
+    .submenu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding-left: 20px;
+    }
+
+    .nav-dropdown.active + .submenu {
+      max-height: 500px;
+      padding-top: 4px;
+      padding-bottom: 4px;
+    }
+
+    .store-card {
+      margin-top: auto;
+      background: var(--primary-light);
+      border-radius: var(--radius-xl);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .store-card h4 {
+      font-size: 14px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-store {
+      background: var(--primary);
+      color: #ffffff;
+      border: none;
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+    }
+
+    .content-area {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .content-header {
+      padding: 24px 32px 0 32px;
+    }
+
+    .breadcrumb {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .page-title {
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 5px;
+      border-radius: var(--radius-md);
+      width: fit-content;
+      flex-wrap: wrap;
+    }
+
+    .tab {
+      padding: 8px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+    }
+
+    .tab.active {
+      color: var(--text-main);
+      background: var(--bg-container);
+    }
+
+    .content-body {
+      padding: 24px 32px 60px 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .mobile-header {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 60px;
+      padding: 0 16px;
+      background: var(--bg-container);
+      justify-content: space-between;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .mobile-logo {
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-sm);
+      object-fit: cover;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100dvh;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1001;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .sidebar-overlay.show {
+      display: block;
+      opacity: 1;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      color: #fff;
+      padding: 10px 16px;
+      border-radius: var(--radius-md);
+      font-size: 12px;
+      font-weight: 600;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s ease;
+      z-index: 2000;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        flex-direction: column;
+        padding-top: 60px;
+      }
+
+      .mobile-header {
+        display: flex;
+      }
+
+      .app-container {
+        height: calc(100dvh - 60px);
+      }
+
+      .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 85%;
+        max-width: 320px;
+        height: 100dvh;
+        z-index: 1002;
+        transform: translateX(-100%);
+      }
+
+      .sidebar.show {
+        transform: translateX(0);
+      }
+
+      .close-sidebar-btn {
+        display: block;
+      }
+
+      .content-header {
+        padding: 16px 16px 0 16px;
+      }
+
+      .content-body {
+        padding: 16px 16px 80px 16px;
+      }
+    }
+  </style>
 </head>
 <body data-theme="dark">
 
   <div class="mobile-header">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <!-- Path gambar ke public/img/icon.png -->
-      <img src="/img/icon.png" alt="Mineplix" class="mobile-logo">
+      <img src="icon.png" alt="Mineplix" class="mobile-logo">
       <span style="font-weight: 700; font-size: 14px;">Mineplix</span>
     </div>
     <button id="sidebarToggle" class="mobile-menu-btn">
@@ -25,15 +415,16 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <div class="app-container">
+
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-header">
         <div class="sidebar-brand">
-          <img src="/img/icon.png" alt="Mineplix" class="sidebar-logo">
+          <img src="icon.png" alt="Mineplix" class="sidebar-logo">
           <h2>Mineplix</h2>
         </div>
         <div style="display: flex; align-items: center; gap: 6px;">
           <button class="theme-toggle-btn" id="themeToggleBtn">
-            <i class="fa-solid fa-circle-half-stroke"></i> Mode
+            <i class="fa-solid fa-moon" id="themeIcon"></i>
           </button>
           <button class="close-sidebar-btn" id="closeSidebarBtn">✕</button>
         </div>
@@ -47,7 +438,7 @@
       <div class="store-card">
         <h4><i class="fa-solid fa-cart-shopping"></i> Mineplix Store</h4>
         <p>Dapatkan Rank, Key Crate, dan Perk eksklusif server sekarang.</p>
-        <a href="https://store.mineplix.biz.id" target="_blank" class="btn-store">Buka Store</a>
+        <a href="https://store.mineplix.net" target="_blank" class="btn-store">Buka Store</a>
       </div>
     </aside>
 
@@ -60,10 +451,204 @@
 
       <div class="content-body" id="contentBody"></div>
     </main>
+
   </div>
 
   <div class="toast" id="toast">Teks berhasil disalin!</div>
-  <!-- Path JS ke public/js/script.js -->
-  <script src="/js/script.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. DOKUMEN & STATE LOGIC
+      const sidebarMenu = [
+        { id: "home", label: "Home", type: "single" },
+        {
+          id: "gameplay",
+          label: "Panduan Gameplay",
+          type: "dropdown",
+          children: [
+            { id: "tutorial-land", label: "Tutorial Land" },
+            { id: "tutorial-economy", label: "Tutorial Economy" },
+            { id: "tutorial-essentials", label: "Tutorial Essentials" }
+          ]
+        },
+        { id: "rules", label: "Rules & Regulasi", type: "single" },
+        { id: "economies-stats", label: "Economies and Stats Update", type: "single" },
+        { id: "ranks", label: "Server Ranks Badge", type: "single" }
+      ];
+
+      let currentPageId = "";
+      let activeTabIndex = 0;
+      let pageCache = {};
+
+      // 2. TOGGLE DARK / LIGHT MODE LOGIC
+      const themeToggleBtn = document.getElementById('themeToggleBtn');
+      const themeIcon = document.getElementById('themeIcon');
+      const body = document.body;
+
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      body.setAttribute('data-theme', savedTheme);
+      updateThemeIcon(savedTheme);
+
+      if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+          const currentTheme = body.getAttribute('data-theme');
+          const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+          body.setAttribute('data-theme', newTheme);
+          localStorage.setItem('theme', newTheme);
+          updateThemeIcon(newTheme);
+        });
+      }
+
+      function updateThemeIcon(theme) {
+        if (!themeIcon) return;
+        if (theme === 'light') {
+          themeIcon.className = 'fa-solid fa-sun';
+        } else {
+          themeIcon.className = 'fa-solid fa-moon';
+        }
+      }
+
+      // 3. TOGGLE SIDEBAR MOBILE LOGIC
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+      function openSidebar() {
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.add('show');
+          sidebarOverlay.classList.add('show');
+        }
+      }
+
+      function closeSidebar() {
+        if (sidebar && sidebarOverlay) {
+          sidebar.classList.remove('show');
+          sidebarOverlay.classList.remove('show');
+        }
+      }
+
+      if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
+      if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
+      if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
+
+      // 4. NAVIGASI HASH & CONTENT RENDER
+      function getPageFromHash() {
+        return window.location.hash.replace(/^#+/, '').trim() || "home";
+      }
+
+      function initSidebarNav() {
+        const navContainer = document.getElementById('sidebarNavContainer');
+        if (!navContainer) return;
+        navContainer.innerHTML = '';
+
+        sidebarMenu.forEach(menu => {
+          if (menu.type === "single") {
+            const cleanId = menu.id.replace(/^#+/, '');
+            const itemA = document.createElement('a');
+            itemA.className = `nav-item ${cleanId === currentPageId ? 'active' : ''}`;
+            itemA.href = `#${cleanId}`;
+            itemA.innerHTML = `<span class="label">${menu.label}</span>`;
+            itemA.addEventListener('click', (e) => {
+              e.preventDefault();
+              switchPage(cleanId);
+              closeSidebar();
+            });
+            navContainer.appendChild(itemA);
+          } else if (menu.type === "dropdown") {
+            const hasActiveChild = menu.children.some(child => child.id.replace(/^#+/, '') === currentPageId);
+
+            const dropDiv = document.createElement('div');
+            dropDiv.className = `nav-item nav-dropdown ${hasActiveChild ? 'active' : ''}`;
+            dropDiv.innerHTML = `<span class="label">${menu.label}</span><i class="fa-solid fa-chevron-down dropdown-arrow"></i>`;
+
+            const subDiv = document.createElement('div');
+            subDiv.className = 'submenu';
+
+            menu.children.forEach(child => {
+              const cleanChildId = child.id.replace(/^#+/, '');
+              const childA = document.createElement('a');
+              childA.className = `nav-item ${cleanChildId === currentPageId ? 'active' : ''}`;
+              childA.href = `#${cleanChildId}`;
+              childA.innerHTML = `<span class="label">${child.label}</span>`;
+              childA.addEventListener('click', (e) => {
+                e.preventDefault();
+                switchPage(cleanChildId);
+                closeSidebar();
+              });
+              subDiv.appendChild(childA);
+            });
+
+            dropDiv.addEventListener('click', (e) => {
+              e.preventDefault();
+              dropDiv.classList.toggle('active');
+            });
+
+            navContainer.appendChild(dropDiv);
+            navContainer.appendChild(subDiv);
+          }
+        });
+      }
+
+      async function fetchPageData(pageId) {
+        if (pageCache[pageId]) return pageCache[pageId];
+        try {
+          const response = await fetch(`./pages/${pageId}.json`);
+          if (!response.ok) throw new Error("Gagal load JSON");
+          const data = await response.json();
+          pageCache[pageId] = data;
+          return data;
+        } catch (err) {
+          return null;
+        }
+      }
+
+      async function switchPage(pageId) {
+        const cleanPageId = pageId.replace(/^#+/, '').trim() || "home";
+        currentPageId = cleanPageId;
+        window.location.hash = '#' + cleanPageId;
+
+        initSidebarNav();
+
+        const data = await fetchPageData(cleanPageId);
+        if (data) {
+          activeTabIndex = 0;
+          renderPage(data);
+        }
+      }
+
+      function renderPage(page) {
+        const breadcrumbContainer = document.getElementById('breadcrumbContainer');
+        if (breadcrumbContainer && page.breadcrumb) {
+          breadcrumbContainer.innerHTML = page.breadcrumb.join(' / ');
+        }
+
+        const pageTitle = document.getElementById('pageTitle');
+        if (pageTitle) pageTitle.innerText = page.title || '';
+
+        const tabsContainer = document.getElementById('tabsContainer');
+        if (tabsContainer && page.tabs) {
+          tabsContainer.innerHTML = '';
+          page.tabs.forEach((tab, index) => {
+            const tabEl = document.createElement('div');
+            tabEl.className = `tab ${index === activeTabIndex ? 'active' : ''}`;
+            tabEl.innerText = tab.label;
+            tabEl.addEventListener('click', () => {
+              activeTabIndex = index;
+              renderPage(page);
+            });
+            tabsContainer.appendChild(tabEl);
+          });
+        }
+      }
+
+      window.addEventListener('hashchange', () => {
+        switchPage(getPageFromHash());
+      });
+
+      // Initial Call
+      switchPage(getPageFromHash());
+    });
+  </script>
 </body>
 </html>
