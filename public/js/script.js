@@ -1,207 +1,382 @@
-document.addEventListener('DOMContentLoaded', () => {
-  // Cache untuk menyimpan data JSON yang sudah pernah dimuat agar tidak fetch ulang
-  const jsonCache = {};
+// Struktur Sidebar Menu menggunakan Clean Path URL
+const sidebarMenu = [
+  { id: "/", label: "Home", type: "single" },
+  {
+    id: "gameplay",
+    label: "Panduan Gameplay",
+    type: "dropdown",
+    children: [
+      { id: "/tutor/land", label: "Tutorial Land" },
+      { id: "/tutor/eco", label: "Tutorial Economy" },
+      { id: "/tutor/esentials", label: "Tutorial Home Teleport Rtp Warp Essentials" }
+    ]
+  },
+  { id: "/rules", label: "Rules & Regulasi", type: "single" },
+  { id: "/ecostats", label: "Economies and Stats Update", type: "single" },
+  { id: "/ranksinfo", label: "Server Ranks Badge", type: "single" }
+];
 
-  // 1. Pemetaan URL ke File JSON
-  const routeMap = {
-    '': 'home',
-    'home': 'home',
-    'land': 'tutorland',
-    'tutorland': 'tutorland',
-    'eco': 'tutoreco',
-    'tutoreco': 'tutoreco',
-    'essentials': 'tutoresentials',
-    'tutoresentials': 'tutoresentials',
-    'rules': 'rules',
-    'statseco': 'statseco',
-    'ranks': 'ranks'
-  };
+let activeTabIndex = 0;
+let currentPageData = null;
 
-  function getJsonNameFromUrl() {
-    const rawPath = window.location.pathname.replace(/^\/+|\/+$/g, '');
-    return routeMap[rawPath] || rawPath;
+function getCurrentPath() {
+  const path = window.location.pathname;
+  // Hapus trailing slash jika ada (kecuali untuk root "/")
+  if (path.length > 1 && path.endsWith('/')) {
+    return path.slice(0, -1);
+  }
+  return path === "" ? "/" : path;
+}
+
+function createLinkWrapper(element, link) {
+  if (!link) return element;
+  const anchor = document.createElement('a');
+  anchor.className = 'clickable-node';
+  if (link.startsWith('http://') || link.startsWith('https://')) {
+    anchor.href = link;
+    anchor.target = '_blank';
+  } else {
+    anchor.href = link;
+  }
+  anchor.appendChild(element);
+  return anchor;
+}
+
+function initSidebarNav() {
+  const navContainer = document.getElementById('sidebarNavContainer');
+  if (!navContainer) return;
+  navContainer.innerHTML = '';
+
+  const currentPath = getCurrentPath();
+
+  sidebarMenu.forEach(menu => {
+    if (menu.type === "single") {
+      const itemA = document.createElement('a');
+      itemA.className = `nav-item ${menu.id === currentPath ? 'active' : ''}`;
+      itemA.href = menu.id;
+      itemA.innerHTML = `<span class="label">${menu.label}</span>`;
+      navContainer.appendChild(itemA);
+    } else if (menu.type === "dropdown") {
+      const hasActiveChild = menu.children.some(child => child.id === currentPath);
+
+      const dropDiv = document.createElement('div');
+      dropDiv.className = `nav-item nav-dropdown ${hasActiveChild ? 'active' : ''}`;
+      dropDiv.innerHTML = `<span class="label">${menu.label}</span><i class="fa-solid fa-chevron-down dropdown-arrow"></i>`;
+
+      const subDiv = document.createElement('div');
+      subDiv.className = 'submenu';
+
+      menu.children.forEach(child => {
+        const childA = document.createElement('a');
+        childA.className = `nav-item ${child.id === currentPath ? 'active' : ''}`;
+        childA.href = child.id;
+        childA.innerHTML = `<span class="label">${child.label}</span>`;
+        subDiv.appendChild(childA);
+      });
+
+      dropDiv.addEventListener('click', (e) => {
+        e.preventDefault();
+        dropDiv.classList.toggle('active');
+      });
+
+      navContainer.appendChild(dropDiv);
+      navContainer.appendChild(subDiv);
+    }
+  });
+}
+
+async function loadPageData(jsonTarget) {
+  try {
+    // Mengarahkan fetch ke direktori ../public/json/
+    const response = await fetch(`../public/json/${jsonTarget}.json`);
+    if (!response.ok) throw new Error("Gagal memuat JSON");
+    currentPageData = await response.json();
+    activeTabIndex = 0;
+    renderPage(currentPageData);
+  } catch (err) {
+    console.error("Error loading page data:", err);
+    document.getElementById('contentBody').innerHTML = `<div class="callout-box callout-info">Gagal memuat konten dari ../public/json/${jsonTarget}.json</div>`;
+  }
+}
+
+function renderPage(page) {
+  const breadcrumbContainer = document.getElementById('breadcrumbContainer');
+  if (breadcrumbContainer && page.breadcrumb) {
+    breadcrumbContainer.innerHTML = page.breadcrumb.map((item, idx) => {
+      return idx < page.breadcrumb.length - 1 ? `${item} <span>/</span> ` : item;
+    }).join('');
   }
 
-  // 2. Setup Sidebar Toggle (Buka & Tutup Menu Mobile)
-  const sidebar = document.getElementById('sidebar');
+  const pageTitle = document.getElementById('pageTitle');
+  if (pageTitle) pageTitle.innerText = page.title || "";
+
+  const tabsContainer = document.getElementById('tabsContainer');
+  if (tabsContainer) {
+    tabsContainer.innerHTML = '';
+    if (page.tabs) {
+      page.tabs.forEach((tab, index) => {
+        const tabEl = document.createElement('div');
+        tabEl.className = `tab ${index === activeTabIndex ? 'active' : ''}`;
+        tabEl.innerText = tab.label;
+        tabEl.addEventListener('click', () => {
+          activeTabIndex = index;
+          renderPage(page);
+        });
+        tabsContainer.appendChild(tabEl);
+      });
+    }
+  }
+
+  if (page.tabs && page.tabs[activeTabIndex]) {
+    renderTabContent(page.tabs[activeTabIndex]);
+  }
+}
+
+function renderTabContent(tabData) {
+  const contentBody = document.getElementById('contentBody');
+  if (!contentBody) return;
+  contentBody.innerHTML = '';
+
+  if (!tabData || !tabData.sections) return;
+
+  tabData.sections.forEach(sec => {
+    if (sec.type === "stats_grid") {
+      const gridDiv = document.createElement('div');
+      gridDiv.className = 'info-stats-grid';
+      sec.items.forEach(st => {
+        const statNode = document.createElement('div');
+        statNode.className = 'stat-item';
+        statNode.innerHTML = `<i class="${st.icon}"></i><span>${st.text}</span>`;
+        gridDiv.appendChild(createLinkWrapper(statNode, st.link));
+      });
+      contentBody.appendChild(gridDiv);
+    } 
+    else if (sec.type === "profile_card") {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<div class="section-title-bar"><h3>${sec.title}</h3></div>`;
+      const listDiv = document.createElement('div');
+      listDiv.className = 'staff-list';
+      sec.profiles.forEach(p => {
+        const profNode = document.createElement('div');
+        profNode.className = 'staff-card';
+        profNode.innerHTML = `
+          <img src="${p.avatar}" alt="${p.name}" class="staff-avatar">
+          <div class="staff-info">
+            <h4>${p.name} ${p.badge ? `<span class="badge badge-primary">${p.badge}</span>` : ''}</h4>
+            <p>${p.role}</p>
+          </div>
+        `;
+        listDiv.appendChild(createLinkWrapper(profNode, p.link));
+      });
+      wrap.appendChild(listDiv);
+      contentBody.appendChild(wrap);
+    }
+    else if (sec.type === "faq_accordion") {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<div class="section-title-bar"><h3>${sec.title}</h3></div>`;
+      const accDiv = document.createElement('div');
+      accDiv.className = 'accordion';
+
+      sec.items.forEach(item => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = `accordion-item ${item.active ? 'active' : ''}`;
+        let chaptersHtml = item.chapters.map(ch => `<li class="chapter-item">${ch}</li>`).join('');
+
+        itemDiv.innerHTML = `
+          <div class="accordion-header">
+            <div class="accordion-header-title">${item.title}</div>
+            <div class="accordion-header-count">
+              <span>${item.countText}</span>
+              <i class="fa-solid fa-chevron-down chevron-icon"></i>
+            </div>
+          </div>
+          <div class="accordion-content">
+            <ul class="chapter-list">${chaptersHtml}</ul>
+          </div>
+        `;
+
+        itemDiv.querySelector('.accordion-header').addEventListener('click', () => {
+          const isActive = itemDiv.classList.contains('active');
+          accDiv.querySelectorAll('.accordion-item').forEach(i => i.classList.remove('active'));
+          if (!isActive) itemDiv.classList.add('active');
+        });
+
+        accDiv.appendChild(itemDiv);
+      });
+
+      wrap.appendChild(accDiv);
+      contentBody.appendChild(wrap);
+    }
+    else if (sec.type === "card") {
+      const cardDiv = document.createElement('div');
+      cardDiv.className = 'card-container';
+      cardDiv.innerHTML = `
+        <div class="section-title-bar">
+          <h3>${sec.title}</h3>
+          ${sec.desc ? `<p class="section-desc">${sec.desc}</p>` : ''}
+        </div>
+      `;
+      if (sec.subcards) {
+        sec.subcards.forEach(sc => {
+          const subNode = document.createElement('div');
+          subNode.className = 'subcard';
+          subNode.innerHTML = `<h5>${sc.title}</h5><p>${sc.desc}</p>`;
+          cardDiv.appendChild(createLinkWrapper(subNode, sc.link));
+        });
+      }
+      contentBody.appendChild(createLinkWrapper(cardDiv, sec.link));
+    }
+    else if (sec.type === "grid_card") {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<div class="section-title-bar"><h3>${sec.title}</h3></div>`;
+      const gridDiv = document.createElement('div');
+      gridDiv.className = 'grid-card-container';
+      sec.items.forEach(gi => {
+        const gridItemNode = document.createElement('div');
+        gridItemNode.className = 'grid-card-item';
+        gridItemNode.innerHTML = `
+          <h4 style="font-size:13px; font-weight:600;">${gi.title}</h4>
+          <p style="font-size:12px; color:var(--text-muted);">${gi.desc}</p>
+        `;
+        gridDiv.appendChild(createLinkWrapper(gridItemNode, gi.link));
+      });
+      wrap.appendChild(gridDiv);
+      contentBody.appendChild(wrap);
+    }
+    else if (sec.type === "bar_card") {
+      const barDiv = document.createElement('div');
+      barDiv.className = 'bar-card-clean';
+      barDiv.innerHTML = `
+        <span class="bar-card-title">${sec.title}</span>
+        <span class="bar-card-value">${sec.value}</span>
+      `;
+      contentBody.appendChild(createLinkWrapper(barDiv, sec.link));
+    }
+    else if (sec.type === "callout") {
+      const calloutDiv = document.createElement('div');
+      calloutDiv.className = `callout-box callout-${sec.style || 'info'}`;
+      calloutDiv.innerHTML = `
+        <i class="${sec.icon || 'fa-solid fa-circle-info'}"></i>
+        <div>
+          ${sec.title ? `<strong style="display:block; margin-bottom:2px;">${sec.title}</strong>` : ''}
+          <span>${sec.text}</span>
+        </div>
+      `;
+      contentBody.appendChild(createLinkWrapper(calloutDiv, sec.link));
+    }
+    else if (sec.type === "commands") {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `<div class="section-title-bar"><h3>${sec.title}</h3></div>`;
+      const cmdList = document.createElement('div');
+      cmdList.className = 'command-list';
+      sec.items.forEach(cmd => {
+        const cmdNode = document.createElement('div');
+        cmdNode.className = 'command-item';
+        cmdNode.innerHTML = `
+          <div><salin>${cmd.command}</salin></div>
+          <span class="command-desc">${cmd.desc}</span>
+        `;
+        cmdList.appendChild(createLinkWrapper(cmdNode, cmd.link));
+      });
+      wrap.appendChild(cmdList);
+      contentBody.appendChild(wrap);
+    }
+    else if (sec.type === "economy_table") {
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `
+        <div class="section-title-bar">
+          <h3>${sec.title}</h3>
+          ${sec.desc ? `<p class="section-desc">${sec.desc}</p>` : ''}
+        </div>
+      `;
+      const tableWrap = document.createElement('div');
+      tableWrap.className = 'table-wrapper';
+      const table = document.createElement('table');
+      table.className = 'economy-table';
+
+      let ths = sec.headers.map(h => `<th>${h}</th>`).join('');
+      let trs = sec.rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+
+      table.innerHTML = `<thead><tr>${ths}</tr></thead><tbody>${trs}</tbody>`;
+      tableWrap.appendChild(table);
+      wrap.appendChild(tableWrap);
+      contentBody.appendChild(wrap);
+    }
+  });
+
+  bindCopyEvents();
+}
+
+function bindCopyEvents() {
+  const salinElements = document.querySelectorAll('salin, .copy-inline');
+  salinElements.forEach(el => {
+    el.removeEventListener('click', handleCopy);
+    el.addEventListener('click', handleCopy);
+  });
+}
+
+function handleCopy(e) {
+  e.stopPropagation();
+  const textToCopy = e.currentTarget.innerText.trim();
+  navigator.clipboard.writeText(textToCopy).then(() => {
+    showToast(`Berhasil salin: "${textToCopy}"`);
+  }).catch(() => {
+    showToast("Gagal menyalin teks.");
+  });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  if (!toast) return;
+  toast.innerText = msg;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+// Inisialisasi Event Listener Theme dan Sidebar Mobile
+document.addEventListener("DOMContentLoaded", () => {
+  const themeToggleBtn = document.getElementById('themeToggleBtn');
+  const body = document.body;
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  body.setAttribute('data-theme', savedTheme);
+
+  if (themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+      body.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+    });
+  }
+
   const sidebarToggle = document.getElementById('sidebarToggle');
   const closeSidebarBtn = document.getElementById('closeSidebarBtn');
+  const sidebar = document.getElementById('sidebar');
   const sidebarOverlay = document.getElementById('sidebarOverlay');
 
-  function openSidebar() {
-    if (sidebar) sidebar.classList.add('active');
-    if (sidebarOverlay) sidebarOverlay.classList.add('active');
+  if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+      sidebar.classList.add('show');
+      sidebarOverlay.classList.add('show');
+    });
   }
 
-  function closeSidebar() {
-    if (sidebar) sidebar.classList.remove('active');
-    if (sidebarOverlay) sidebarOverlay.classList.remove('active');
-  }
+  const closeSidebar = () => {
+    sidebar.classList.remove('show');
+    sidebarOverlay.classList.remove('show');
+  };
 
-  if (sidebarToggle) sidebarToggle.addEventListener('click', openSidebar);
   if (closeSidebarBtn) closeSidebarBtn.addEventListener('click', closeSidebar);
   if (sidebarOverlay) sidebarOverlay.addEventListener('click', closeSidebar);
 
-  // 3. Initial Load & History Popstate
-  let initialJson = getJsonNameFromUrl();
-  document.body.setAttribute('data-page-json', initialJson);
-  loadPageData(initialJson);
+  // Jalankan render sidebar
+  initSidebarNav();
 
-  window.addEventListener('popstate', () => {
-    const currentJson = getJsonNameFromUrl();
-    document.body.setAttribute('data-page-json', currentJson);
-    loadPageData(currentJson);
-  });
-
-  // 4. Intersepsi Link Navigasi Internal
-  document.addEventListener('click', (e) => {
-    const link = e.target.closest('a');
-    if (link && link.origin === window.location.origin && !link.getAttribute('target')) {
-      const href = link.getAttribute('href');
-      if (href && !href.startsWith('#') && !href.startsWith('http')) {
-        e.preventDefault();
-        closeSidebar(); // Otomatis tutup sidebar saat menu diklik di mobile
-        
-        window.history.pushState({}, '', href);
-        const nextJson = getJsonNameFromUrl();
-        document.body.setAttribute('data-page-json', nextJson);
-        loadPageData(nextJson);
-      }
-    }
-  });
-
-  // 5. Load Data JSON dengan Caching & Transisi Cepat
-  async function loadPageData(jsonName) {
-    const contentBody = document.getElementById('contentBody');
-    const pageTitle = document.getElementById('pageTitle');
-    const breadcrumbContainer = document.getElementById('breadcrumbContainer');
-
-    try {
-      if (contentBody) {
-        contentBody.style.opacity = '0.4'; // Transisi halus tanpa merusak layout
-      }
-
-      let data;
-      // Gunakan cache jika data JSON sudah pernah didownload
-      if (jsonCache[jsonName]) {
-        data = jsonCache[jsonName];
-      } else {
-        const response = await fetch(`/json/${jsonName}.json`);
-        if (!response.ok) throw new Error('File JSON tidak ditemukan');
-        data = await response.json();
-        jsonCache[jsonName] = data; // Simpan ke cache
-      }
-
-      // Update Header & Breadcrumb
-      if (data.title) {
-        document.title = `Mineplix - ${data.title}`;
-        if (pageTitle) pageTitle.textContent = data.title;
-      }
-      if (breadcrumbContainer) {
-        breadcrumbContainer.textContent = Array.isArray(data.breadcrumb) 
-          ? data.breadcrumb.join(' / ') 
-          : (data.breadcrumb || 'Home');
-      }
-
-      // Render Layout
-      if (contentBody) {
-        let htmlOutput = '';
-        if (data.content) {
-          htmlOutput = data.content;
-        } else if (data.tabs && Array.isArray(data.tabs)) {
-          data.tabs.forEach(tab => {
-            if (tab.sections && Array.isArray(tab.sections)) {
-              tab.sections.forEach(section => {
-                htmlOutput += renderSection(section);
-              });
-            }
-          });
-        }
-        contentBody.innerHTML = htmlOutput || '<p>Konten kosong.</p>';
-        contentBody.style.opacity = '1';
-      }
-
-    } catch (error) {
-      console.error('Error loading page JSON:', error);
-      if (pageTitle) pageTitle.textContent = '404 - Not Found';
-      if (contentBody) {
-        contentBody.innerHTML = `
-          <div style="text-align: center; padding: 40px 0;">
-            <h2>Halaman Tidak Ditemukan</h2>
-            <p>File <code>/json/${jsonName}.json</code> tidak ditemukan.</p>
-          </div>
-        `;
-        contentBody.style.opacity = '1';
-      }
-    }
+  // Memuat file JSON sesuai atribut `data-page-json` pada tag <body>
+  const jsonTarget = body.getAttribute('data-page-json');
+  if (jsonTarget) {
+    loadPageData(jsonTarget);
   }
 });
-
-// Helper Render Komponen
-function renderSection(sec) {
-  switch (sec.type) {
-    case 'commands':
-      return `
-        <div class="section-block" style="margin-bottom: 20px;">
-          <h3 style="margin-bottom: 10px;">${sec.title || ''}</h3>
-          <div class="commands-list">
-            ${(sec.items || []).map(item => `
-              <div class="command-item" style="display:flex; justify-content:space-between; align-items:center; background:rgba(255,255,255,0.05); padding:10px 14px; margin-bottom:8px; border-radius:6px;">
-                <code>${item.command}</code>
-                <span style="opacity:0.8; font-size: 13px;">${item.desc}</span>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
-    case 'card':
-      return `
-        <div class="card-block" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08); padding:16px; border-radius:8px; margin-bottom:16px;">
-          <h3 style="margin-bottom: 8px;">${sec.title || ''}</h3>
-          <p style="opacity: 0.9; line-height: 1.5;">${sec.desc || ''}</p>
-          ${sec.subcards ? `
-            <div class="subcards-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:10px; margin-top:14px;">
-              ${sec.subcards.map(sub => `
-                <div style="background:rgba(255,255,255,0.05); padding:12px; border-radius:6px;">
-                  <strong style="display:block; margin-bottom:4px;">${sub.title}</strong>
-                  <span style="font-size:13px; opacity:0.8;">${sub.desc}</span>
-                </div>
-              `).join('')}
-            </div>
-          ` : ''}
-        </div>
-      `;
-
-    case 'callout':
-      return `
-        <div class="callout-block ${sec.style || 'info'}" style="background:rgba(59,130,246,0.1); border-left:4px solid #3b82f6; padding:12px 16px; border-radius:4px; margin-bottom:16px;">
-          <strong style="display:flex; align-items:center; gap:8px;">
-            <i class="${sec.icon || 'fa-solid fa-info-circle'}"></i> ${sec.title || ''}
-          </strong>
-          <p style="margin-top:6px; opacity:0.9;">${sec.text || ''}</p>
-        </div>
-      `;
-
-    case 'profile_card':
-      return `
-        <div class="profile-section" style="margin-bottom:20px;">
-          <h3 style="margin-bottom:12px;">${sec.title || ''}</h3>
-          <div class="profiles-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px;">
-            ${(sec.profiles || []).map(p => `
-              <div class="profile-card" style="display:flex; align-items:center; gap:12px; background:rgba(255,255,255,0.05); padding:10px 14px; border-radius:8px;">
-                <img src="${p.avatar}" alt="${p.name}" style="width:42px; height:42px; border-radius:50%;">
-                <div>
-                  <div style="font-weight:bold; font-size:14px;">${p.name} <span style="font-size:10px; background:#3b82f6; color:#fff; padding:2px 6px; border-radius:4px; margin-left:4px;">${p.badge}</span></div>
-                  <div style="font-size:12px; opacity:0.7; margin-top:2px;">${p.role}</div>
-                </div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
-      `;
-
-    default:
-      return '';
-  }
-}
