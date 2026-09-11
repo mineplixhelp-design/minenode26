@@ -87,15 +87,15 @@ function initSidebarNav() {
 
 async function loadPageData(jsonTarget) {
   try {
-    // Mengarahkan fetch ke direktori ../public/json/
-    const response = await fetch(`../public/json/${jsonTarget}.json`);
+    // Mengarahkan fetch ke path absolut /json/
+    const response = await fetch(`/json/${jsonTarget}.json`);
     if (!response.ok) throw new Error("Gagal memuat JSON");
     currentPageData = await response.json();
     activeTabIndex = 0;
     renderPage(currentPageData);
   } catch (err) {
     console.error("Error loading page data:", err);
-    document.getElementById('contentBody').innerHTML = `<div class="callout-box callout-info">Gagal memuat konten dari ../public/json/${jsonTarget}.json</div>`;
+    document.getElementById('contentBody').innerHTML = `<div class="callout-box callout-info">Gagal memuat konten dari /json/${jsonTarget}.json</div>`;
   }
 }
 
