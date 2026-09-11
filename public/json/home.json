@@ -1,0 +1,105 @@
+{
+  "breadcrumb": ["Home"],
+  "title": "Selamat Datang di Mineplix",
+  "tabs": [
+    {
+      "id": "tab-about",
+      "label": "About",
+      "sections": [
+        {
+          "type": "commands",
+          "title": "Alamat IP & Koneksi Server",
+          "items": [
+            {
+              "command": "play.mineplix.my.id",
+              "desc": "IP Server (Java & Bedrock Edition)"
+            },
+            {
+              "command": "19132",
+              "desc": "Port Khusus Bedrock / Pocket Edition"
+            }
+          ]
+        },
+        {
+          "type": "card",
+          "title": "Tentang Mineplix Survival Ecogen",
+          "desc": "Mineplix adalah server Minecraft Survival Ecogen modern dengan sistem ekonomi generator, pengamanan land claim, serta berbagai fitur custom yang dirancang untuk pengalaman bermain kompetitif dan ramah pemula.",
+          "subcards": [
+            {
+              "title": "Versi & Dukungan",
+              "desc": "Mendukung Minecraft Java & Bedrock (Crossplay) versi terbaru 1.20+"
+            },
+            {
+              "title": "Fitur Unggulan",
+              "desc": "Resource Generator (Ecogen), Economy Market, Custom Items, & Safe Land Claim"
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Tips Pertama Kali Masuk",
+          "text": "Baru pertama kali bergabung? Gunakan perintah <salin>/guide</salin> di game atau lihat tutorial website buka menu dan pilih panduan gameplay.",
+          "style": "info",
+          "icon": "fa-solid fa-lightbulb"
+        },
+        {
+          "type": "profile_card",
+          "title": "Staff & Tim Pengembang",
+          "profiles": [
+            {
+              "name": "ITZygaa",
+              "role": "Project Lead @Mineplix and Developer",
+              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
+              "badge": "Owner"
+            },
+            {
+              "name": "VxPloit",
+              "role": "Developer And Admin System",
+              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
+              "badge": "Dev"
+            },
+            {
+              "name": "Kenzo9192",
+              "role": "Builders Maps And Admin Server",
+              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
+              "badge": "Builders"
+            },
+            {
+              "name": "PAKrifki",
+              "role": "Builders Maps And Admin Server",
+              "avatar": "https://mc-heads.net/avatar/037ed48d150e4291b4e3aefd9e4f024f/32.png",
+              "badge": "Builders"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "tab-komunitas",
+      "label": "Komunitas",
+      "sections": [
+        {
+          "type": "grid_card",
+          "title": "Platform Komunitas & Store",
+          "items": [
+            {
+              "title": "Discord Official",
+              "desc": "Tempat ngobrol utama, informasi pengumuman patch, dan event harian server.",
+              "link": "https://discord.gg/mineplix"
+            },
+            {
+              "title": "Forum Diskusi",
+              "desc": "Wadah diskusi publik, tempat berbagi saran fitur baru, dan guide dari komunitas.",
+              "link": "https://mineplix.my.id/forum"
+            },
+            {
+              "title": "Mineplix Store",
+              "desc": "Dukung keberlangsungan server dan dapatkan Rank, Key Crate, serta Perk eksklusif.",
+              "link": "https://store.mineplix.net"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
