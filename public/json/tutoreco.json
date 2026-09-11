@@ -1,0 +1,109 @@
+{
+  "breadcrumb": ["Home", "Panduan Gameplay", "Tutorial Economy"],
+  "title": "Panduan Ekonomi & Generator",
+  "tabs": [
+    {
+      "id": "tab-eco-info",
+      "label": "Informasi Dasar",
+      "sections": [
+        {
+          "type": "card",
+          "title": "Sistem Ekonomi Mineplix",
+          "desc": "Sistem ekonomi terpadu berbasis Vault API. Kamu dapat mengumpulkan saldo melalui berbagai aktivitas gameplay dan menggunakannya untuk kemajuan karakter.",
+          "subcards": [
+            {
+              "title": "Cara Mendapatkan Saldo",
+              "desc": "Menerima gaji dari Jobs (/jobs), bonus kenaikan level Skills (/skills), menjual resource lewat /sell gui, serta hasil penjualan barang di Auction House (/ah)."
+            },
+            {
+              "title": "Penggunaan Saldo",
+              "desc": "Membeli item di /shop, berbelanja barang langka milik player lain di /ah, membeli Claim Blocks tambahan untuk land, serta transaksi antar pemain."
+            }
+          ]
+        },
+        {
+          "type": "grid_card",
+          "title": "Fitur Pekerjaan & Skill (Jobs & Skills)",
+          "items": [
+            {
+              "title": "Pekerjaan Server (/jobs)",
+              "desc": "Pilih pekerjaan favoritmu seperti Miner, Farmer, atau Hunter. Setiap aktivitas kerja yang kamu lakukan otomatis memberikan pemasukan saldo."
+            },
+            {
+              "title": "Leveling Skill (/skills)",
+              "desc": "Tingkatkan skill karakter secara alami saat bermain (Mining, Farming, Fishing). Setiap pencapaian level baru akan memberikan hadiah uang tunai."
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Tips Mengumpulkan Saldo",
+          "text": "Kombinasikan pekerjaan di <salin>/jobs</salin> dengan penambangan dari Resource Generator! Hasil panen/tambang bisa langsung dijual praktis via menu <salin>/sell gui</salin>.",
+          "style": "info",
+          "icon": "fa-solid fa-lightbulb"
+        }
+      ]
+    },
+    {
+      "id": "tab-eco-commands",
+      "label": "Daftar Perintah",
+      "sections": [
+        {
+          "type": "commands",
+          "title": "Perintah Keuangan & Saldo",
+          "items": [
+            {
+              "command": "/balance",
+              "desc": "Cek jumlah total uang/saldo yang kamu miliki saat ini (alias: /bal atau /money)."
+            },
+            {
+              "command": "/pay [nama_player] [jumlah]",
+              "desc": "Transfer uang/saldo secara langsung dari akun milikmu ke player lain."
+            },
+            {
+              "command": "/baltop",
+              "desc": "Melihat daftar 10 player terkaya dengan saldo terbanyak di server."
+            }
+          ]
+        },
+        {
+          "type": "commands",
+          "title": "Perintah Penjualan, Jobs & Skills",
+          "items": [
+            {
+              "command": "/sell gui",
+              "desc": "Membuka tampilan GUI khusus penjualan. Cukup masukkan item ke dalam menu lalu tutup untuk langsung menjualnya."
+            },
+            {
+              "command": "/jobs",
+              "desc": "Membuka menu daftar pekerjaan untuk memilih, bergabung, atau melihat progres job milikmu."
+            },
+            {
+              "command": "/skills",
+              "desc": "Membuka menu utama status skill, level, dan klaim hadiah milestone kamu."
+            },
+            {
+              "command": "/shop",
+              "desc": "Membuka menu toko utama server untuk membeli item dan kebutuhan dasar."
+            },
+            {
+              "command": "/ah",
+              "desc": "Membuka menu Auction House untuk melihat dan membeli item jualan player lain."
+            },
+            {
+              "command": "/ah sell [harga]",
+              "desc": "Menjual item yang sedang kamu pegang ke Auction House dengan harga pilihanmu."
+            }
+          ]
+        },
+        {
+          "type": "callout",
+          "title": "Waspada Penipuan Transaksi",
+          "text": "Selalu gunakan sistem <salin>/ah</salin> saat bertransaksi barang dengan player lain. Hindari transfer manual jika barang belum diterima!",
+          "style": "warning",
+          "icon": "fa-solid fa-triangle-exclamation"
+        }
+      ]
+    }
+  ]
+}
