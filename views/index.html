@@ -1,16 +1,70 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mineplix - Home</title>
-    <link rel="stylesheet" href="/css/style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>Mineplix - Home</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Path CSS diarahkan ke public/css/style.css -->
+  <link rel="stylesheet" href="/css/style.css">
 </head>
-<body>
-    <h1>Selamat Datang di Mineplix</h1>
-    <nav>
-        <a href="/land">Land</a> | 
-        <a href="/economies">Economies</a>
-    </nav>
+<body data-theme="dark" data-page-json="home">
+
+  <div class="mobile-header">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <!-- Path Gambar diarahkan ke public/img/icon.png -->
+      <img src="/img/icon.png" alt="Mineplix" class="mobile-logo">
+      <span style="font-weight: 700; font-size: 14px;">Mineplix</span>
+    </div>
+    <button id="sidebarToggle" class="mobile-menu-btn">
+      <i class="fa-solid fa-bars"></i> Menu
+    </button>
+  </div>
+
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+  <div class="app-container">
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <!-- Path Gambar diarahkan ke public/img/icon.png -->
+          <img src="/img/icon.png" alt="Mineplix" class="sidebar-logo">
+          <h2>Mineplix</h2>
+        </div>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button class="theme-toggle-btn" id="themeToggleBtn">
+            <i class="fa-solid fa-circle-half-stroke"></i> Mode
+          </button>
+          <button class="close-sidebar-btn" id="closeSidebarBtn">✕</button>
+        </div>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-title">Menu Utama</div>
+        <div class="nav-tree-container" id="sidebarNavContainer"></div>
+      </div>
+
+      <div class="store-card">
+        <h4><i class="fa-solid fa-cart-shopping"></i> Mineplix Store</h4>
+        <p>Dapatkan Rank, Key Crate, dan Perk eksklusif server sekarang.</p>
+        <a href="https://store.mineplix.net" target="_blank" class="btn-store">Buka Store</a>
+      </div>
+    </aside>
+
+    <main class="content-area">
+      <header class="content-header">
+        <div class="breadcrumb" id="breadcrumbContainer"></div>
+        <h1 class="page-title" id="pageTitle"></h1>
+        <div class="tabs" id="tabsContainer"></div>
+      </header>
+
+      <div class="content-body" id="contentBody"></div>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">Teks berhasil disalin!</div>
+  <!-- Path JS diarahkan ke public/js/script.js -->
+  <script src="/js/script.js"></script>
 </body>
 </html>
